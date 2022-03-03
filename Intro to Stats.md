@@ -72,134 +72,165 @@ head(colleges, 15) %>% view()
 
 
  ```
-### DESCRIPTIVES: MIN, MAX, AVERAGE, ETC.
-Let's get some basic statistics from our data - averages, standard deviations, etc. 
-The 'psych' package we loaded has a handy function called 'describe'. 
-**describe(*filename*)**
+ 
+Check out the structure of our data - which fields are numeric, character, etc.
 ```
-describe(nba)
-```
-The first two fields are strings, so R can't run statistics on them.
-```        vars   n   mean    sd median trimmed   mad min   max range  skew kurtosis   se
-player*    1 509    NaN    NA     NA     NaN    NA Inf  -Inf  -Inf    NA       NA   NA
-team*      2 507    NaN    NA     NA     NaN    NA Inf  -Inf  -Inf    NA       NA   NA
-age        3 507  25.54  4.05   25.0   25.21  4.45  19  43.0  24.0  0.76     0.30 0.18
-height     4 509  78.34  3.53   78.0   78.33  2.97  63  89.0  26.0 -0.03     0.27 0.16
-weight     5 507 217.26 24.16  215.0  216.43 25.20 160 311.0 151.0  0.39     0.01 1.07
-points     6 505   8.66  6.58    7.1    7.88  5.78   0  35.2  35.2  1.08     0.86 0.29
-```
-But check out the last four. The average age of NBA players, for instance, is 25-1/2. They range from 19 to 43 years old.
-The sd (standard deviation) of 4 means about two-thirds of players fall within 4 years of the average age.
-That is, about two-third of players range from 21-1/2 to 29-1/2 years old.
-
-You can also get a single statistic for a single variable.
-
-**measure(*filename$fieldname*)**
-```
-mean(nba$height)
-```
-The average height for players is 78.3 inches. What about the heaviest player?
-```
-max(nba$weight)
-```
-Uh oh, we get "NA" because a couple of players have missing values. In that case, we tell R to remove the NAs by adding 'na.rm = TRUE'
-```
-max(nba$weight, na.rm = TRUE)
-```
-The heaviest player weights 311 pounds.
-
-### MAKE COMPARISONS: Z-scores
-
-Sometimes we want to compare things on the same scale. 
-For instance, Tacko Fall is the tallest AND heaviest player in our data.
-But is he taller than he is heavy? 
-
-That's where Z-scores come in. Z-scores tell you how far from the average a certain data point - or NBA player - is.
-It's expressed as a standard deviation.
-
-Calculate the Z-score for one variable
-
-**scale(*filename$fieldname*)**
-```
-scale(nba$height)
-```
-Tacko Fall is row 445 in our data. His Z-score, or standardized score, is 3.02. 
-That means his height is 3.02 standard deviations above the average height of 78.3 inches. 
-```
-[443,] -1.51370374
-[444,]  0.46986611
-[445,]  3.02017021
-[446,]  0.75323323
-[447,] -0.66360238
+str(colleges)
 ```
 
-Now get his standardized weight.
+*STEP 2: Descriptive statistics*
+We can get basic statistics for our variables using summary.
 ```
-scale(nba$weight)
+summary(colleges)
 ```
-Tacko's weight is 3.88 standard deviations above the average weight of 217.3 pounds.
-So he's heavier (3.88) than he is tall (3.02)
-```
-[443,] -1.12820207
-[444,]  0.11347329
-[445,]  3.87988856
-[446,]  0.61014344
-[447,]  0.69292179
-```
-What if you want Z-scores for all variables? scale() works only on numeric data.
 
-In our files, that's columns 3 through 6. Put that range in brackets, like so:
+Note that this works only for numeric fields, not character.
+We can also look at a single variable.
 ```
-scale(nba[3:6])
+summary(colleges$total_cost)
 ```
-This time we don't see all cases. Let's save this as a new file (or dataframe in R speak)
-```
-znba <- scale(nba[3:6])
-```
-Let's combine those Z-scores with our original file so we have everything together.
-Use a function called cbind, for column bind.
 
-***newfile* <- cbind(*file1, file2*)**
+Or a single statistic for a single variable.
 ```
-nba_joined <- cbind(nba, znba)
-View(nba_joined)
+mean(colleges$total_cost) 
 ```
-<img src="https://github.com/HackWriter/Stats-with-R/blob/pictures/view_nbajoined.png" width="600">
-### FIND RELATIONSHIPS: Correlations
-Let's switch to the NFL file and run some correlations.
+
+Wait, it returns NA. That's because some colleges have missing values.
+You have to exclude the null fields with na.rm = TRUE
+That's Rspeak for Remove NAs? Yes
+
 ```
-View(nfl)
+mean(colleges$total_cost, na.rm = T) 
 ```
+
+Other handy stats
+```
+median(colleges$total_cost, na.rm = T) # median = middle value
+sd(colleges$total_cost, na.rm = T) # standard deviation
+min(colleges$total_cost, na.rm = T) # minimum value, i.e. cheapest college
+max(colleges$total_cost, na.rm = T) # maximum value, i.e. priciest college
+```
+
+Whoa, which college has the highest sticker price of $78,555?
+```
+which.max(colleges$total_cost)
+```
+It returns 340, which is the row number. Which college is that?
+This returns the data in that row.
+
+```
+colleges[340,]
+```
+
+We can also return just the college name (column 2) in that row.
+```
+colleges[340,2]
+```
+Same result but we use the column name instead of number.
+```
+colleges[340,"instnm"]
+```
+Bonus tip: Put those commands together
+```
+colleges[which.max(colleges$total_cost),]
+```
+Try getting the same info for the cheapest college on your own.
+
+**STEP 3: Frequency counts and group statistics**
+What if you want to know how many colleges there are by control (public, private, for-profit)
+```
+colleges %>%
+  group_by(control) %>%
+  count() 
+```
+Instead of count, we can use summarize. This is helpful if we want to build on this & add statistics like average, median, etc.
+```
+colleges %>%
+  group_by(control) %>%
+  summarize(freq = n()) 
+```
+Note that I called it "freq" but you can call it anything, like count or N
+
+We can also look at the average total cost by type.
+```
+colleges %>%
+  group_by(control) %>%
+  summarize(freq = n(), avg = mean(total_cost, na.rm = T))
+```
+Look only at colleges in Georgia
+```
+colleges %>%
+  group_by(control) %>%
+  filter(state == "GA") %>%
+  summarize(freq = n(), avg = mean(total_cost, na.rm = T))
+```
+Compare the average sticker price (total_cost) to net price, 
+which is what students actually pay after grants & scholarships
+We'll also give our new fields more detailed names
+```
+colleges %>%
+  group_by(control) %>%
+  filter(state == "GA") %>%
+  summarize(freq = n(),
+            avg_net = mean(net_price, na.rm = T), 
+            avg_total = mean(total_cost, na.rm = T),
+            avg_default = mean(default_3yr, na.rm = T))
+```
+
 Look at the relationship between the number of points scored and games won all season.
 **cor(*filename$fieldname1, filename$fieldname2*)**
 ```
-cor(nfl$pts_scored, nfl$games_won)
+cor(colleges$total_cost, colleges$net_price)
 ```
-The correlation is 0.71. What does that mean?
+There's that NA again - we need to specify only complete pairs, i.e. both fields have values
+```
+cor(colleges$total_cost, colleges$net_price, use = "complete.obs")
+
+```
+The correlation is **0.78**. What does that mean?
 Correlations range from -1 to 1.
 - A value of -1 means perfect negative correlation. As one variable goes up, the other goes down.
 - A value of 1 means perfect positive correlation. The two variables go up together.
 - A value of 0 means no correlation - there's no relationship between the two variables.
 So 0.71 shows a strong correlation between points scored and games won.
 Note: This correlation is also known as Pearson's R. It's the default kind with cor()
-What if we want to see correlations for all pairs of variables?
-Remember to select only numeric fields, in this case colums 2 through 9.
+
+We can also look at correlations across multiple variables
+
 ```
-cor(nfl[2:9])
+colnames(colleges)
+cor(colleges[7:16], use = "pairwise.complete.obs")
+cor(colleges[7:16], use = "complete.obs")
 ```
+
+*pairwise.complete.obs = Goes pair by pair and excludes missing variables. N will vary.
+complete.obs = Includes only cases with no missing values at all. N will be consistent.*
+
+
 The strongest correlation is between points scored and yards gained, at 0.84.
 The weakest is between takeaways and yards gained, at 0.03.
+
+
 We also want to know if the correlations are significant - did they happen by pure chance?
 The corr.test function from the psych package shows this. Again, it works only on numeric fields.
 ```
-corr.test(nfl[2:9])
+corr.test(colleges[10:16], use = "complete.obs")
 ```
+Generally if you have a lot of cases, it will be statistically significant.
+What about a smaller slice of the data?
+
+```
+ga_colleges <- filter(colleges, state == "GA")
+corr.test(ga_colleges[10:16], use = "complete.obs")
+```
+
 We see the correlations again, followed by probability values, also known as p-values.
 Anything less than 0.05 means it's statistically significant.
 That means there's less than 5 percent probability that we got these results by pure chance.
 Take the mild correlation of 0.37 between takeaways and points scored. It has a p-value of 0.62.
 That means there's a 62 percent chance we got those results by dumb luck.
-### VISUALIZE YOUR DATA: Histograms and scatter plots
+
+**VISUALIZE YOUR DATA: Histograms and scatter plots**
 It helps to visualize your data, too. For one variable, draw a histogram.
 **hist(*filename$fieldname*)**
 ```
