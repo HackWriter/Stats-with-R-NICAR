@@ -20,7 +20,7 @@ library(tidyverse)
 We'll work with this data set, which has information on four-year colleges in the US:
 - colleges.csv -- Select data from College Scorecard. Full files here: https://collegescorecard.ed.gov/data/
 
-**STEP 1: Getting started**
+**Getting started**
 Read the .csv file into R. In R-speak, we're creating a data frame named *colleges*.
 It contains field names, so we include this: col_names = TRUE
 
@@ -35,8 +35,9 @@ view(colleges)
 
 What if your file has millions of records and you want to see only the first few? Use head to call up the first rows.
 
+```
 head(colleges, 15)
-
+```
 We see the first several fields in the Console window (lower left of RStudio) but not all. So let's view all columns in first 15 rows.
 ```
 view(head(colleges, 15))
@@ -76,7 +77,7 @@ Check out the structure of our data - which fields are numeric, character, etc.
 str(colleges)
 ```
 
-**STEP 2: Descriptive statistics**
+**Descriptive statistics**
 
 We can get basic statistics for our variables using summary.
 ```
@@ -109,16 +110,40 @@ sd(colleges$total_cost, na.rm = T) # standard deviation
 min(colleges$total_cost, na.rm = T) # minimum value, i.e. cheapest college
 max(colleges$total_cost, na.rm = T) # maximum value, i.e. priciest college
 ```
+Which gives us
+```
+> median(colleges$total_cost, na.rm = T) # median = middle value
+[1] 32016
+> sd(colleges$total_cost, na.rm = T) # standard deviation
+[1] 16482.91
+> min(colleges$total_cost, na.rm = T) # minimum value, i.e. cheapest college
+[1] 9007
+> max(colleges$total_cost, na.rm = T) # maximum value, i.e. priciest college
+[1] 78555
+```
+
 
 Whoa, which college has the highest sticker price of $78,555?
 ```
 which.max(colleges$total_cost)
+
+[1] 340
 ```
 It returns 340, which is the row number. Which college is that?
 This returns the data in that row.
 
 ```
 colleges[340,]
+```
+Which gives us
+```
+> colleges[340,]
+# A tibble: 1 × 17
+  unitid instnm city  state control ugrads accept_rate act_mid sat_avg total_cost
+   <dbl> <chr>  <chr> <chr> <chr>    <dbl>       <dbl>   <dbl>   <dbl>      <dbl>
+1 144050 Unive… Chic… IL    Private   6801      0.0617      34    1528      78555
+# … with 7 more variables: net_price <dbl>, ft_faculty <dbl>, pell_grant <dbl>,
+#   first_gen <dbl>, default_3yr <dbl>, grad_rate <dbl>, grad_debt <dbl>
 ```
 
 We can also return just the college name (column 2) in that row.
@@ -129,19 +154,27 @@ Same result but we use the column name instead of number.
 ```
 colleges[340,"instnm"]
 ```
-Bonus tip: Put those commands together
+*Bonus tip: Put those commands together*
 ```
 colleges[which.max(colleges$total_cost),]
 ```
 Try getting the same info for the cheapest college on your own.
 
-**STEP 3: Frequency counts and group statistics**
+**Frequency counts and group statistics**
 
 What if you want to know how many colleges there are by control (public, private, for-profit)
 ```
 colleges %>%
   group_by(control) %>%
   count() 
+  
+# A tibble: 3 × 2
+# Groups:   control [3]
+  control        n
+  <chr>      <int>
+1 For-profit   167
+2 Private     1264
+3 Public       580
 ```
 Instead of count, we can use summarize. This is helpful if we want to build on this & add statistics like average, median, etc.
 ```
@@ -156,6 +189,13 @@ We can also look at the average total cost by type.
 colleges %>%
   group_by(control) %>%
   summarize(freq = n(), avg = mean(total_cost, na.rm = T))
+  
+# A tibble: 3 × 3
+  control     freq    avg
+  <chr>      <int>  <dbl>
+1 For-profit   167 30242.
+2 Private     1264 43256.
+3 Public       580 22327.
 ```
 Look only at colleges in Georgia
 ```
@@ -163,6 +203,13 @@ colleges %>%
   group_by(control) %>%
   filter(state == "GA") %>%
   summarize(freq = n(), avg = mean(total_cost, na.rm = T))
+  
+# A tibble: 3 × 3
+  control     freq    avg
+  <chr>      <int>  <dbl>
+1 For-profit     8 29366.
+2 Private       29 39922.
+3 Public        18 20624.
 ```
 Compare the average sticker price (total_cost) to net price, 
 which is what students actually pay after grants & scholarships
@@ -175,10 +222,17 @@ colleges %>%
             avg_net = mean(net_price, na.rm = T), 
             avg_total = mean(total_cost, na.rm = T),
             avg_default = mean(default_3yr, na.rm = T))
+            
+# A tibble: 3 × 5
+  control     freq avg_net avg_total avg_default
+  <chr>      <int>   <dbl>     <dbl>       <dbl>
+1 For-profit     8  22631.    29366.      0.124 
+2 Private       29  22543.    39922.      0.0953
+3 Public        18  12965.    20624.      0.0882
 ```
 
-Look at the relationship between the number of points scored and games won all season.
-
+**Correlations**
+For that we use *cor*
 ```
 cor(colleges$total_cost, colleges$net_price)
 ```
