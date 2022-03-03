@@ -4,11 +4,9 @@ First, set your working directory.
 
 **setwd("*FILE PATH*")**
 
-```setwd("~/IRE_NICAR/NOLA_2020")```
 Or you can use the drop-down menu: **Session -> Set Working Directory -> Choose Directory**
-Make sure these four packages are installed and loaded: dplyr, tidyverse, ggplot2 and psych
-**install.packages("*package_name*")**.  # note the quotes here
-**library(*package_name*)**. # but no quotes here
+
+We'll be using these libraries. 
 ```
 library(dplyr)
 library(ggplot2)
@@ -78,7 +76,8 @@ Check out the structure of our data - which fields are numeric, character, etc.
 str(colleges)
 ```
 
-*STEP 2: Descriptive statistics*
+**STEP 2: Descriptive statistics**
+
 We can get basic statistics for our variables using summary.
 ```
 summary(colleges)
@@ -137,6 +136,7 @@ colleges[which.max(colleges$total_cost),]
 Try getting the same info for the cheapest college on your own.
 
 **STEP 3: Frequency counts and group statistics**
+
 What if you want to know how many colleges there are by control (public, private, for-profit)
 ```
 colleges %>%
@@ -178,7 +178,7 @@ colleges %>%
 ```
 
 Look at the relationship between the number of points scored and games won all season.
-**cor(*filename$fieldname1, filename$fieldname2*)**
+
 ```
 cor(colleges$total_cost, colleges$net_price)
 ```
@@ -192,7 +192,7 @@ Correlations range from -1 to 1.
 - A value of -1 means perfect negative correlation. As one variable goes up, the other goes down.
 - A value of 1 means perfect positive correlation. The two variables go up together.
 - A value of 0 means no correlation - there's no relationship between the two variables.
-So 0.71 shows a strong correlation between points scored and games won.
+So 0.78 shows a strong correlation between sticker price and net price.
 Note: This correlation is also known as Pearson's R. It's the default kind with cor()
 
 We can also look at correlations across multiple variables
@@ -206,29 +206,29 @@ cor(colleges[7:16], use = "complete.obs")
 *pairwise.complete.obs = Goes pair by pair and excludes missing variables. N will vary.
 complete.obs = Includes only cases with no missing values at all. N will be consistent.*
 
+Let's say we want to see what measures are most strongly correlated with grad_rate.
+That would be the median ACT (act_mid) and average SAT scores of incoming students, at 0.83.
 
-The strongest correlation is between points scored and yards gained, at 0.84.
-The weakest is between takeaways and yards gained, at 0.03.
-
+The weakest correlation with grad rates is the percent of full-time faculty, at 0.11.
 
 We also want to know if the correlations are significant - did they happen by pure chance?
 The corr.test function from the psych package shows this. Again, it works only on numeric fields.
 ```
-corr.test(colleges[10:16], use = "complete.obs")
+corr.test(colleges[11:16], use = "complete.obs")
 ```
 Generally if you have a lot of cases, it will be statistically significant.
-What about a smaller slice of the data?
+What about a smaller slice of the data? Let's create a dataframe with just Georgia colleges.
 
 ```
 ga_colleges <- filter(colleges, state == "GA")
-corr.test(ga_colleges[10:16], use = "complete.obs")
+corr.test(ga_colleges[11:16], use = "complete.obs")
 ```
 
 We see the correlations again, followed by probability values, also known as p-values.
 Anything less than 0.05 means it's statistically significant.
 That means there's less than 5 percent probability that we got these results by pure chance.
-Take the mild correlation of 0.37 between takeaways and points scored. It has a p-value of 0.62.
-That means there's a 62 percent chance we got those results by dumb luck.
+Take the mild correlation of 0.30 between grad rates and net price. It has a p-value of 0.17.
+That means there's a 17 percent chance we got those results by dumb luck.
 
 **VISUALIZE YOUR DATA: Histograms and scatter plots**
 It helps to visualize your data, too. For one variable, draw a histogram.
