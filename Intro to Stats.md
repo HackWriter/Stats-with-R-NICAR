@@ -232,26 +232,22 @@ That means there's a 17 percent chance we got those results by dumb luck.
 
 **VISUALIZE YOUR DATA: Histograms and scatter plots**
 It helps to visualize your data, too. For one variable, draw a histogram.
-**hist(*filename$fieldname*)**
+
 ```
-hist(nfl$games_won)
+hist(colleges$total_cost)
 ```
-<img src="https://github.com/HackWriter/Stats-with-R/blob/pictures/histogram_nfl_games.png" width="400">
+
 For two variables, make a scatter plot.
-**plot(*filename$fieldname1, filename$fieldname2*)**
 ```
-plot(nfl$games_won, nfl$pts_scored)
+plot(colleges$total_cost, colleges$net_price)
 ```
-<img src="https://github.com/HackWriter/Stats-with-R/blob/pictures/scatterplot_nfl_games_points.png" width="400">
-You can also draw plots of all pairs of variables. Once again, R takes only numeric variables.
-For the NFL data, that's columns 2 through 9.
+You can also use *pairs*. This shows a matrix of columns 12 through 15.
 ```
-pairs(nfl[2:9])
+pairs(colleges[12:15])
 ```
-<img src="https://github.com/HackWriter/Stats-with-R/blob/pictures/matrix_nfl_allpairs.png" width="400">
-What if you want to show three pairs of variables that aren't in order? Here's the syntax.
-pairs(~ fieldname2 + fieldname4 + fieldname6, data = filename )
+Or you can select the variables by name.
 ```
-pairs(~ pts_scored + giveaways + yds_allowed, data = nfl)
+pairs(~ total_cost + net_price + grad_rate, data = colleges)
 ```
-<img src="https://github.com/HackWriter/Stats-with-R/blob/pictures/matrix_nfl_3pairs.png" width="400">
+
+
