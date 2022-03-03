@@ -21,6 +21,7 @@ We'll work with this data set, which has information on four-year colleges in th
 - colleges.csv -- Select data from College Scorecard. Full files here: https://collegescorecard.ed.gov/data/
 
 **Getting started**
+
 Read the .csv file into R. In R-speak, we're creating a data frame named *colleges*.
 It contains field names, so we include this: col_names = TRUE
 
@@ -231,7 +232,8 @@ colleges %>%
 3 Public        18  12965.    20624.      0.0882
 ```
 
-**Correlations**
+**Correlations - how much two variables are related to each other**
+
 For that we use *cor*
 ```
 cor(colleges$total_cost, colleges$net_price)
@@ -239,6 +241,9 @@ cor(colleges$total_cost, colleges$net_price)
 There's that NA again - we need to specify only complete pairs, i.e. both fields have values
 ```
 cor(colleges$total_cost, colleges$net_price, use = "complete.obs")
+
+
+[1] 0.7830763
 
 ```
 The correlation is **0.78**. What does that mean?
@@ -253,17 +258,34 @@ We can also look at correlations across multiple variables
 
 ```
 colnames(colleges)
-cor(colleges[7:16], use = "pairwise.complete.obs")
 cor(colleges[7:16], use = "complete.obs")
+cor(colleges[7:16], use = "pairwise.complete.obs")
+
 ```
 
 *pairwise.complete.obs = Goes pair by pair and excludes missing variables. N will vary.
 complete.obs = Includes only cases with no missing values at all. N will be consistent.*
 
 Let's say we want to see what measures are most strongly correlated with grad_rate.
+Here's an excerpt from using complete.obs
+
+```
+             ft_faculty pell_grant  first_gen default_3yr  grad_rate
+accept_rate -0.04393138  0.1460390  0.2248305  0.16469773 -0.3516391
+act_mid      0.17450810 -0.7278785 -0.6772431 -0.67363509  0.8348351
+sat_avg      0.18830115 -0.7324468 -0.6709702 -0.67957407  0.8325304
+total_cost  -0.03964591 -0.4291535 -0.5164789 -0.41105102  0.5848145
+net_price   -0.09809404 -0.4429567 -0.5323789 -0.33552365  0.4594331
+ft_faculty   1.00000000 -0.1441360 -0.1880841 -0.04161433  0.1145687
+pell_grant  -0.14413599  1.0000000  0.6806644  0.68847561 -0.6889457
+first_gen   -0.18808414  0.6806644  1.0000000  0.51159820 -0.6656683
+default_3yr -0.04161433  0.6884756  0.5115982  1.00000000 -0.7465700
+grad_rate    0.11456872 -0.6889457 -0.6656683 -0.74657005  1.0000000
+```
 That would be the median ACT (act_mid) and average SAT scores of incoming students, at 0.83.
 
 The weakest correlation with grad rates is the percent of full-time faculty, at 0.11.
+
 
 We also want to know if the correlations are significant - did they happen by pure chance?
 The corr.test function from the psych package shows this. Again, it works only on numeric fields.
