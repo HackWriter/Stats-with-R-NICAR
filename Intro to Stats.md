@@ -326,4 +326,55 @@ Or you can select the variables by name.
 pairs(~ total_cost + net_price + grad_rate, data = colleges)
 ```
 
+**More powerful charts with the ggplot2 library**
 
+**Scatterplots**
+```
+ggplot(colleges, aes(x=total_cost, y=net_price)) + geom_point()
+```
+Change the point size
+```
+ggplot(colleges, aes(x=total_cost, y=net_price)) + 
+  geom_point(size = 1)
+```
+Color by college type
+```
+ggplot(colleges, aes(x=total_cost, y=net_price, color = control)) + 
+  geom_point(size = 1)
+```
+Do the same with GA colleges only
+Color by college type
+```
+ggplot(ga_colleges, aes(x=total_cost, y=net_price, color = control)) + 
+  geom_point(size = 1)
+```
+
+Label points with school ID. hjust & vjust reposition the label
+```
+ggplot(ga_colleges, aes(x=total_cost, y=net_price, color = control, 
+                        label=unitid)) + 
+  geom_point(size = 1) +
+  geom_text(size = 2, hjust=0, vjust=0)
+```
+
+**Histograms**
+```
+ggplot(colleges, aes(x=total_cost)) +
+  geom_histogram()
+```
+Change the bin width (based on total dollars)
+```
+ggplot(colleges, aes(x=total_cost)) +
+  geom_histogram(binwidth=1000)
+```
+Change the colors
+```
+ggplot(colleges, aes(x=total_cost)) +
+  geom_histogram(binwidth=1000, color="blue", fill="white")
+```
+
+Color by group
+```
+ggplot(colleges, aes(x=total_cost, color=control)) +
+  geom_histogram(binwidth=1000, fill="white")
+```
