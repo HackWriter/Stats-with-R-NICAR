@@ -2,7 +2,7 @@
 # Focus: Four-year, bachelor's degree-granting schools.
 
 # your working directory will be different - this is mine
-setwd("~/Documents/NICAR22/college_scorecard/")
+setwd("~/Documents/NICAR/college_scorecard/")
 
 
 library(dplyr)
