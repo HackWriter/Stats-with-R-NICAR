@@ -198,19 +198,19 @@ colleges %>%
 2 Private     1264 43256.
 3 Public       580 22327.
 ```
-Look only at colleges in Georgia
+Look only at colleges in Tennessee
 ```
 colleges %>%
   group_by(control) %>%
-  filter(state == "GA") %>%
+  filter(state == "TN") %>%
   summarize(freq = n(), avg = mean(total_cost, na.rm = T))
   
 # A tibble: 3 × 3
   control     freq    avg
   <chr>      <int>  <dbl>
-1 For-profit     8 29366.
-2 Private       29 39922.
-3 Public        18 20624.
+1 For-profit     3 25897.
+2 Private       34 38152.
+3 Public        10 23239.
 ```
 Compare the average sticker price (total_cost) to net price, 
 which is what students actually pay after grants & scholarships
@@ -218,7 +218,7 @@ We'll also give our new fields more detailed names
 ```
 colleges %>%
   group_by(control) %>%
-  filter(state == "GA") %>%
+  filter(state == "TN") %>%
   summarize(freq = n(),
             avg_net = mean(net_price, na.rm = T), 
             avg_total = mean(total_cost, na.rm = T),
@@ -227,9 +227,9 @@ colleges %>%
 # A tibble: 3 × 5
   control     freq avg_net avg_total avg_default
   <chr>      <int>   <dbl>     <dbl>       <dbl>
-1 For-profit     8  22631.    29366.      0.124 
-2 Private       29  22543.    39922.      0.0953
-3 Public        18  12965.    20624.      0.0882
+1 For-profit     3  20338     25897.      0.101 
+2 Private       34  19886.    38152.      0.0908
+3 Public        10  13871.    23239.      0.0857
 ```
 
 **Correlations - how much two variables are related to each other**
@@ -293,18 +293,18 @@ The corr.test function from the psych package shows this. Again, it works only o
 corr.test(colleges[11:16], use = "complete.obs")
 ```
 Generally if you have a lot of cases, it will be statistically significant.
-What about a smaller slice of the data? Let's create a dataframe with just Georgia colleges.
+What about a smaller slice of the data? Let's create a dataframe with just Tennessee colleges.
 
 ```
-ga_colleges <- filter(colleges, state == "GA")
-corr.test(ga_colleges[11:16], use = "complete.obs")
+tn_colleges <- filter(colleges, state == "TN")
+corr.test(tn_colleges[11:16], use = "complete.obs")
 ```
 
 We see the correlations again, followed by probability values, also known as p-values.
 Anything less than 0.05 means it's statistically significant.
 That means there's less than 5 percent probability that we got these results by pure chance.
-Take the mild correlation of 0.30 between grad rates and net price. It has a p-value of 0.17.
-That means there's a 17 percent chance we got those results by dumb luck.
+Take the moderate correlation of 0.39 between grad rates and net price. It has a p-value of 0.07.
+That means there's a 7 percent chance we got those results by dumb luck.
 
 **VISUALIZE YOUR DATA: Histograms and scatter plots**
 It helps to visualize your data, too. For one variable, draw a histogram.
@@ -342,16 +342,16 @@ Color by college type
 ggplot(colleges, aes(x=total_cost, y=net_price, color = control)) + 
   geom_point(size = 1)
 ```
-Do the same with GA colleges only
+Do the same with Tennessee colleges only
 Color by college type
 ```
-ggplot(ga_colleges, aes(x=total_cost, y=net_price, color = control)) + 
+ggplot(tn_colleges, aes(x=total_cost, y=net_price, color = control)) + 
   geom_point(size = 1)
 ```
 
 Label points with school ID. hjust & vjust reposition the label
 ```
-ggplot(ga_colleges, aes(x=total_cost, y=net_price, color = control, 
+ggplot(tn_colleges, aes(x=total_cost, y=net_price, color = control, 
                         label=unitid)) + 
   geom_point(size = 1) +
   geom_text(size = 2, hjust=0, vjust=0)
