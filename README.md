@@ -1,4 +1,4 @@
-# Stats-with-R-NICAR22
+# Stats-with-R-NICAR
 R: Introduction to Statistics hands-on class materials
 
 Data file: colleges.csv
