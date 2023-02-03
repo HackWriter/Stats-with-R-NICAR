@@ -305,6 +305,7 @@ Anything less than 0.05 means it's statistically significant.
 That means there's less than 5 percent probability that we got these results by pure chance.
 
 ```
+<b>tag</b>
 <b>Correlation matrix</b>
             net_price ft_faculty pell_grant first_gen default_3yr grad_rate
 net_price        1.00      -0.33      -0.36     -0.50       -0.31     ** 0.39**
