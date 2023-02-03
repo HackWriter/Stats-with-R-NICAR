@@ -305,10 +305,9 @@ Anything less than 0.05 means it's statistically significant.
 That means there's less than 5 percent probability that we got these results by pure chance.
 
 ```
-<b>tag</b>
-<b>Correlation matrix</b>
+Correlation matrix
             net_price ft_faculty pell_grant first_gen default_3yr grad_rate
-net_price        1.00      -0.33      -0.36     -0.50       -0.31     ** 0.39**
+net_price        1.00      -0.33      -0.36     -0.50       -0.31     **0.39**
 ft_faculty      -0.33       1.00      -0.17     -0.13        0.02      0.15
 pell_grant      -0.36      -0.17       1.00      0.71        0.82     -0.81
 first_gen       -0.50      -0.13       0.71      1.00        0.53     -0.76
@@ -316,7 +315,7 @@ default_3yr     -0.31       0.02       0.82      0.53        1.00     -0.76
 grad_rate        0.39       0.15      -0.81     -0.76       -0.76      1.00
 ...
 
-**Probability values** (Entries above the diagonal are adjusted for multiple tests.) 
+Probability values (Entries above the diagonal are adjusted for multiple tests.) 
             net_price ft_faculty pell_grant first_gen default_3yr grad_rate
 net_price        0.00       0.19       0.12      0.01        0.21      **0.07**
 ft_faculty       0.03       0.00       1.00      1.00        1.00      1.00
