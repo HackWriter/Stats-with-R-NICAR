@@ -211,17 +211,6 @@ ggplot(colleges, aes(x=total_cost, y=net_price)) +
 ggplot(colleges, aes(x=total_cost, y=net_price, color = control)) + 
   geom_point(size = 1)
 
-# Do the same with GA colleges only
-# Color by college type
-ggplot(ga_colleges, aes(x=total_cost, y=net_price, color = control)) + 
-  geom_point(size = 1)
-
-# Label points with school ID. hjust & vjust reposition the label
-ggplot(ga_colleges, aes(x=total_cost, y=net_price, color = control, 
-                        label=unitid)) + 
-  geom_point(size = 1) +
-  geom_text(size = 2, hjust=0, vjust=0)
-
 # Do the same with TN colleges only
 # Color by college type
 ggplot(tn_colleges, aes(x=total_cost, y=net_price, color = control)) + 
